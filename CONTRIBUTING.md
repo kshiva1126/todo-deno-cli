@@ -15,12 +15,17 @@ git clone https://github.com/YOUR_USERNAME/todo-deno-cli.git
 cd todo-deno-cli
 ```
 
-2. 開発用の実行:
+2. Git hooksをセットアップ（推奨）:
+```bash
+deno task setup-hooks
+```
+
+3. 開発用の実行:
 ```bash
 deno task dev help
 ```
 
-3. テストの実行:
+4. テストの実行:
 ```bash
 deno task test
 ```
@@ -52,6 +57,18 @@ deno task test
 
 # 全体チェック
 deno task fmt && deno task lint && deno task check && deno task test
+```
+
+**💡 Git Hooksを使用した自動チェック**
+
+Git hooksをセットアップしている場合、コミット時に自動的に上記のチェックが実行されます：
+
+```bash
+# Git hooksが有効な場合、コミット時に自動実行される
+git commit -m "your commit message"
+
+# 手動でpre-commitチェックを実行
+deno task pre-commit
 ```
 
 ### 3. コミット

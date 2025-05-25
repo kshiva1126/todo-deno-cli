@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Pre-commit hook for TODO CLI
+# このスクリプトはコミット前に自動的に実行されます
+
+set -e
+
+echo "🔍 Pre-commit checks を実行中..."
+
+# フォーマットチェック
+echo "🎨 フォーマットチェック..."
+if ! deno task fmt:check; then
+    echo "❌ フォーマットエラーが見つかりました。"
+    echo "💡 修正するには: deno task fmt"
+    exit 1
+fi
+
+# リントチェック
+echo "🔍 リントチェック..."
+if ! deno task lint; then
+    echo "❌ リントエラーが見つかりました。"
+    echo "💡 修正してからコミットしてください。"
+    exit 1
+fi
+
+# 型チェック
+echo "📝 型チェック..."
+if ! deno task check; then
+    echo "❌ 型エラーが見つかりました。"
+    echo "💡 修正してからコミットしてください。"
+    exit 1
+fi
+
+# テスト実行
+echo "🧪 テスト実行..."
+if ! deno task test; then
+    echo "❌ テストが失敗しました。"
+    echo "💡 テストを修正してからコミットしてください。"
+    exit 1
+fi
+
+echo "✅ すべてのチェックが完了しました！"
+echo "🎉 コミットを続行します..." 

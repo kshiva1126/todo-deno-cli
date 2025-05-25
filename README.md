@@ -32,6 +32,12 @@ deno install --global --allow-read --allow-write --allow-env --config deno.json 
 deno task install
 ```
 
+3. 開発環境のセットアップ（開発者向け）:
+```bash
+# Git hooksを有効化（コミット前の自動チェック）
+deno task setup-hooks
+```
+
 ## 📖 使用方法
 
 ### タスクの追加
@@ -87,6 +93,24 @@ deno task test:watch
 ```
 
 ### コード品質管理
+
+#### Git Hooks（推奨）
+```bash
+# コミット前の自動チェックを有効化
+deno task setup-hooks
+
+# 手動でpre-commitチェックを実行
+deno task pre-commit
+
+# Git hooksを無効化
+git config --unset core.hooksPath
+```
+
+Git hooksを有効化すると、コミット前に以下が自動実行されます：
+- フォーマットチェック
+- リントチェック
+- 型チェック
+- テスト実行
 
 #### フォーマット
 ```bash
