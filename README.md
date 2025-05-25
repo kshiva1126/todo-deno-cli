@@ -12,7 +12,7 @@ DenoとTypeScriptで作られたシンプルなCLI TODOリストアプリケー�
 
 ## 📋 必要条件
 
-- [Deno](https://deno.land/) v1.30.0 以上
+- [Deno](https://deno.land/) v2.0.0 以上
 
 ## 🛠️ インストール
 
