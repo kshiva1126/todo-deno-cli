@@ -4,8 +4,8 @@
   "description": "A simple CLI TODO list application built with Deno and TypeScript",
   "exports": "./main.ts",
   "tasks": {
-    "dev": "deno run --allow-read --allow-write main.ts",
-    "install": "deno install --allow-read --allow-write -n todo main.ts",
+    "dev": "deno run --allow-read --allow-write --allow-env main.ts",
+    "install": "deno install --global --allow-read --allow-write --allow-env --config deno.json -f -n todo main.ts",
     "test": "deno test --allow-read --allow-write --allow-env",
     "test:watch": "deno test --allow-read --allow-write --allow-env --watch"
   },

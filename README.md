@@ -24,7 +24,12 @@ cd todo-deno-cli
 
 2. グローバルコマンドとしてインストール:
 ```bash
-deno install --allow-read --allow-write -n todo main.ts
+deno install --global --allow-read --allow-write --allow-env --config deno.json -n todo main.ts
+```
+
+または、deno taskを使用:
+```bash
+deno task install
 ```
 
 ## 📖 使用方法
@@ -63,7 +68,22 @@ todo help
 
 ### 開発時の実行
 ```bash
-deno run --allow-read --allow-write main.ts list
+deno run --allow-read --allow-write --allow-env main.ts list
+```
+
+または、deno taskを使用:
+```bash
+deno task dev list
+```
+
+### テストの実行
+```bash
+deno task test
+```
+
+### ウォッチモードでのテスト
+```bash
+deno task test:watch
 ```
 
 ### プロジェクト構造
@@ -93,6 +113,13 @@ todo-deno-cli/
 deno uninstall todo
 ```
 
-## �� ライセンス
+## 💡 権限について
+
+このアプリは以下の権限が必要です：
+- `--allow-read`: タスクファイルの読み取り
+- `--allow-write`: タスクファイルの書き込み  
+- `--allow-env`: ホームディレクトリの取得
+
+## 📄 ライセンス
 
 MIT License 

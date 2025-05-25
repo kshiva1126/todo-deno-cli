@@ -24,7 +24,7 @@ todo delete <ID>        # タスクの削除
 todo help              # ヘルプ表示
 
 # 開発時の実行方法
-deno run --allow-read --allow-write main.ts add "タスク内容"
+deno run --allow-read --allow-write --allow-env main.ts add "タスク内容"
 ```
 
 ## データ構造
@@ -48,8 +48,8 @@ ID | Status | Task                | Created
 ## 追加仕様決定事項
 
 ### パッケージ構成
-- **開発時実行**: `deno run --allow-read --allow-write main.ts <command>`
-- **インストール方法**: `deno install --allow-read --allow-write -n todo main.ts`
+- **開発時実行**: `deno run --allow-read --allow-write --allow-env main.ts <command>`
+- **インストール方法**: `deno install --global --allow-read --allow-write --allow-env --config deno.json -n todo main.ts`
 - **インストール後**: `todo <command>` で実行可能
 - **アンインストール**: `deno uninstall todo`
 - **プロジェクト名**: `todo-deno-cli`
@@ -57,7 +57,11 @@ ID | Status | Task                | Created
 ### インストール手順
 1. プロジェクトディレクトリで以下を実行:
    ```bash
-   deno install --allow-read --allow-write -n todo main.ts
+   deno install --global --allow-read --allow-write --allow-env --config deno.json -n todo main.ts
+   ```
+   または:
+   ```bash
+   deno task install
    ```
 2. 以降は `todo` コマンドで実行可能:
    ```bash
@@ -142,6 +146,20 @@ interface TodoData {
 ### 権限設定
 - `--allow-read`: ホームディレクトリの`.todo`フォルダ読み取り
 - `--allow-write`: ホームディレクトリの`.todo`フォルダ書き込み
+- `--allow-env`: ホームディレクトリパスの取得（HOMEまたはUSERPROFILE環境変数）
+
+### 権限プロンプトの回避
+権限プロンプトが表示されないようにするには、すべての必要な権限を事前に指定します：
+```bash
+# 開発時
+deno run --allow-read --allow-write --allow-env main.ts
+
+# インストール時
+deno install --global --allow-read --allow-write --allow-env --config deno.json -n todo main.ts
+
+# または deno task を使用
+deno task install
+```
 
 ## 実装完了状況
 
@@ -156,9 +174,11 @@ interface TodoData {
 - [x] 基本機能のテスト確認
 - [x] README.mdの作成
 - [x] テストファイルの作成
+- [x] 権限プロンプト問題の解決
+- [x] deno taskの設定
 
 ### 🔧 テスト駆動開発
-- **テスト実行**: `deno test`
+- **テスト実行**: `deno test` または `deno task test`
 - **ウォッチモード**: `deno task test:watch`
 - **テストファイル**: 
   - `tests/storage_test.ts` - Storageクラスのテスト
@@ -167,11 +187,11 @@ interface TodoData {
 ### 📝 使用方法
 ```bash
 # 開発時
-deno run --allow-read --allow-write main.ts add "新しいタスク"
-deno run --allow-read --allow-write main.ts list
+deno task dev add "新しいタスク"
+deno task dev list
 
 # インストール後
-deno install --allow-read --allow-write -n todo main.ts
+deno task install
 todo add "新しいタスク"
 todo list
 ```
