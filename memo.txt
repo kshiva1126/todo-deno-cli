@@ -1,0 +1,185 @@
+# CLIのTODOリストアプリ 要件定義・決定事項
+
+## プロジェクト概要
+タスクの追加、一覧表示、完了、削除ができるシンプルなToDoリストをコマンドラインで操作できるアプリケーション
+
+## 技術選択
+- **ランタイム**: Deno
+- **言語**: TypeScript
+- **理由**: 型安全性、標準ライブラリが豊富、外部依存関係の管理が簡単、セキュア
+
+## 基本機能
+1. タスクの追加
+2. 一覧表示  
+3. 完了マーク
+4. 削除
+
+## コマンド構成
+```bash
+# インストール後の実行方法
+todo add "タスク内容"     # タスクの追加
+todo list               # 一覧表示
+todo complete <ID>      # タスクの完了
+todo delete <ID>        # タスクの削除
+todo help              # ヘルプ表示
+
+# 開発時の実行方法
+deno run --allow-read --allow-write main.ts add "タスク内容"
+```
+
+## データ構造
+各タスクの情報：
+- ID（自動採番）
+- タスク内容
+- 作成日時
+- 完了状態（未完了/完了）
+
+## データ保存
+- 形式: JSON
+- 保存場所: ホームディレクトリの `.todo` フォルダ
+
+## 表示形式
+```
+ID | Status | Task                | Created
+1  | [ ]    | 買い物に行く        | 2024-01-15
+2  | [x]    | 資料を作成する      | 2024-01-14
+```
+
+## 追加仕様決定事項
+
+### パッケージ構成
+- **開発時実行**: `deno run --allow-read --allow-write main.ts <command>`
+- **インストール方法**: `deno install --allow-read --allow-write -n todo main.ts`
+- **インストール後**: `todo <command>` で実行可能
+- **アンインストール**: `deno uninstall todo`
+- **プロジェクト名**: `todo-deno-cli`
+
+### インストール手順
+1. プロジェクトディレクトリで以下を実行:
+   ```bash
+   deno install --allow-read --allow-write -n todo main.ts
+   ```
+2. 以降は `todo` コマンドで実行可能:
+   ```bash
+   todo add "新しいタスク"
+   todo list
+   ```
+
+### 依存ライブラリ（Deno標準/外部）
+- **コマンドライン解析**: Deno標準の`std/flags` または `cliffy`
+- **日付処理**: TypeScript標準のDate
+- **ファイル操作**: Deno標準API
+- **表示**: `cliffy/table` - 美しいテーブル表示
+- **色付け**: Deno標準の`std/fmt/colors`
+
+### エラーハンドリング
+- 存在しないIDを指定 → "Task with ID X not found" エラー
+- 無効なコマンド → ヘルプメッセージ表示
+- データファイル破損 → 新しいファイルを作成して継続
+- 権限エラー → 適切なエラーメッセージ表示
+
+### ファイル構成
+```
+todo-deno-cli/
+├── main.ts             # メインエントリーポイント
+├── deno.json           # Deno設定ファイル
+├── README.md
+├── src/
+│   ├── commands/       # コマンド処理
+│   │   ├── add.ts
+│   │   ├── list.ts
+│   │   ├── complete.ts
+│   │   └── delete.ts
+│   ├── utils/          # ユーティリティ
+│   │   ├── storage.ts  # データ保存・読み込み
+│   │   └── display.ts  # 表示フォーマット
+│   ├── models/
+│   │   └── task.ts     # タスクモデル（型定義）
+│   └── types/
+│       └── index.ts    # 共通型定義
+└── tests/              # テストファイル
+    ├── storage_test.ts
+    └── task_model_test.ts
+```
+
+### 追加機能（将来拡張用）
+- タスクの編集: `deno run main.ts edit <ID> "新しい内容"`
+- 検索機能: `deno run main.ts search "キーワード"`
+- 完了済みタスクの非表示: `deno run main.ts list --active`
+
+### データファイル仕様
+- ファイル名: `~/.todo/tasks.json`
+- フォーマット:
+```json
+{
+  "nextId": 3,
+  "tasks": [
+    {
+      "id": 1,
+      "content": "買い物に行く",
+      "completed": false,
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+### TypeScript型定義
+```typescript
+interface Task {
+  id: number;
+  content: string;
+  completed: boolean;
+  createdAt: string;
+}
+
+interface TodoData {
+  nextId: number;
+  tasks: Task[];
+}
+```
+
+### 権限設定
+- `--allow-read`: ホームディレクトリの`.todo`フォルダ読み取り
+- `--allow-write`: ホームディレクトリの`.todo`フォルダ書き込み
+
+## 実装完了状況
+
+### ✅ 完了済み
+- [x] プロジェクト構造の作成
+- [x] 型定義の実装
+- [x] TaskModelクラスの実装
+- [x] Storageクラスの実装（データ保存・読み込み）
+- [x] Displayクラスの実装（表示フォーマット）
+- [x] 各コマンドの実装（add, list, complete, delete）
+- [x] メインCLIの実装
+- [x] 基本機能のテスト確認
+- [x] README.mdの作成
+- [x] テストファイルの作成
+
+### 🔧 テスト駆動開発
+- **テスト実行**: `deno test`
+- **ウォッチモード**: `deno task test:watch`
+- **テストファイル**: 
+  - `tests/storage_test.ts` - Storageクラスのテスト
+  - `tests/task_model_test.ts` - TaskModelクラスのテスト
+
+### 📝 使用方法
+```bash
+# 開発時
+deno run --allow-read --allow-write main.ts add "新しいタスク"
+deno run --allow-read --allow-write main.ts list
+
+# インストール後
+deno install --allow-read --allow-write -n todo main.ts
+todo add "新しいタスク"
+todo list
+```
+
+### 🎯 今後の拡張可能性
+- エラーハンドリングの強化
+- 設定ファイルのサポート
+- タスクの優先度機能
+- 期限設定機能
+- カテゴリ分け機能
+- インポート/エクスポート機能 
