@@ -11,7 +11,9 @@
     "fmt": "deno fmt",
     "fmt:check": "deno fmt --check",
     "lint": "deno lint",
-    "check": "deno check **/*.ts"
+    "check": "deno check **/*.ts",
+    "setup-hooks": "bash scripts/setup-hooks.sh",
+    "pre-commit": "bash .githooks/pre-commit"
   },
   "imports": {
     "@std/fmt": "jsr:@std/fmt@^1.0.0",
