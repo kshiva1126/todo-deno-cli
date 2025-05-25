@@ -10,4 +10,4 @@ export interface TodoData {
   tasks: Task[];
 }
 
-export type Command = 'add' | 'list' | 'complete' | 'delete' | 'help'; 
+export type Command = 'add' | 'list' | 'complete' | 'delete' | 'help';

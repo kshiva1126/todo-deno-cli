@@ -7,7 +7,11 @@
     "dev": "deno run --allow-read --allow-write --allow-env main.ts",
     "install": "deno install --global --allow-read --allow-write --allow-env --config deno.json -f -n todo main.ts",
     "test": "deno test --allow-read --allow-write --allow-env",
-    "test:watch": "deno test --allow-read --allow-write --allow-env --watch"
+    "test:watch": "deno test --allow-read --allow-write --allow-env --watch",
+    "fmt": "deno fmt",
+    "fmt:check": "deno fmt --check",
+    "lint": "deno lint",
+    "check": "deno check **/*.ts"
   },
   "imports": {
     "@std/fmt": "jsr:@std/fmt@^1.0.0",
@@ -16,6 +20,23 @@
     "@std/assert": "jsr:@std/assert@^1.0.0",
     "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
     "@cliffy/table": "jsr:@cliffy/table@^1.0.0-rc.7"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": true,
+    "proseWrap": "preserve",
+    "include": ["src/", "tests/", "main.ts"],
+    "exclude": ["node_modules/", "dist/"]
+  },
+  "lint": {
+    "include": ["src/", "tests/", "main.ts"],
+    "exclude": ["node_modules/", "dist/"],
+    "rules": {
+      "tags": ["recommended"]
+    }
   },
   "compilerOptions": {
     "strict": true,

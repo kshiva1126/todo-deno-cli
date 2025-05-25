@@ -25,4 +25,4 @@ export class TaskModel {
       day: '2-digit',
     });
   }
-} 
+}

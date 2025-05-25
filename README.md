@@ -86,6 +86,35 @@ deno task test
 deno task test:watch
 ```
 
+### コード品質管理
+
+#### フォーマット
+```bash
+# コードを自動整形
+deno task fmt
+
+# フォーマットチェック（CI用）
+deno task fmt:check
+```
+
+#### リント
+```bash
+# コード品質チェック
+deno task lint
+```
+
+#### 型チェック
+```bash
+# TypeScript型チェック
+deno task check
+```
+
+#### 全体チェック
+```bash
+# フォーマット + リント + 型チェック + テスト
+deno task fmt && deno task lint && deno task check && deno task test
+```
+
 ### プロジェクト構造
 ```
 todo-deno-cli/

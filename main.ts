@@ -54,7 +54,7 @@ if (import.meta.main) {
   try {
     await cli.parse(Deno.args);
   } catch (error) {
-    Display.showError(`エラーが発生しました: ${error.message}`);
+    Display.showError(`エラーが発生しました: ${(error as Error).message}`);
     Deno.exit(1);
   }
-} 
+}

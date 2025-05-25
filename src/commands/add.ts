@@ -12,6 +12,6 @@ export async function addCommand(content: string): Promise<void> {
     const task = await Storage.addTask(content.trim());
     Display.showSuccess(`タスクを追加しました: "${task.content}" (ID: ${task.id})`);
   } catch (error) {
-    Display.showError(`タスクの追加に失敗しました: ${error.message}`);
+    Display.showError(`タスクの追加に失敗しました: ${(error as Error).message}`);
   }
 } 

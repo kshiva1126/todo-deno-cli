@@ -1,6 +1,6 @@
 import { join } from '@std/path';
 import { ensureDir, exists } from '@std/fs';
-import type { TodoData, Task } from '../types/index.ts';
+import type { Task, TodoData } from '../types/index.ts';
 
 export class Storage {
   private static readonly TODO_DIR = '.todo';
@@ -16,14 +16,14 @@ export class Storage {
   static async load(): Promise<TodoData> {
     try {
       const filePath = await this.getTodoPath();
-      
+
       if (!(await exists(filePath))) {
         return this.getDefaultData();
       }
 
       const content = await Deno.readTextFile(filePath);
       const data = JSON.parse(content) as TodoData;
-      
+
       // データの妥当性チェック
       if (!data.nextId || !Array.isArray(data.tasks)) {
         console.warn('データファイルが破損しています。新しいファイルを作成します。');
@@ -56,10 +56,10 @@ export class Storage {
       completed: false,
       createdAt: new Date().toISOString(),
     };
-    
+
     data.tasks.push(newTask);
     data.nextId++;
-    
+
     await this.save(data);
     return newTask;
   }
@@ -71,12 +71,12 @@ export class Storage {
 
   static async completeTask(id: number): Promise<boolean> {
     const data = await this.load();
-    const task = data.tasks.find(t => t.id === id);
-    
+    const task = data.tasks.find((t) => t.id === id);
+
     if (!task) {
       return false;
     }
-    
+
     task.completed = true;
     await this.save(data);
     return true;
@@ -85,12 +85,12 @@ export class Storage {
   static async deleteTask(id: number): Promise<boolean> {
     const data = await this.load();
     const initialLength = data.tasks.length;
-    data.tasks = data.tasks.filter(t => t.id !== id);
-    
+    data.tasks = data.tasks.filter((t) => t.id !== id);
+
     if (data.tasks.length === initialLength) {
       return false;
     }
-    
+
     await this.save(data);
     return true;
   }
@@ -101,4 +101,4 @@ export class Storage {
       tasks: [],
     };
   }
-} 
+}

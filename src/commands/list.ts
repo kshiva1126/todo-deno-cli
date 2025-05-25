@@ -6,6 +6,6 @@ export async function listCommand(): Promise<void> {
     const tasks = await Storage.getTasks();
     Display.showTasks(tasks);
   } catch (error) {
-    Display.showError(`タスクの取得に失敗しました: ${error.message}`);
+    Display.showError(`タスクの取得に失敗しました: ${(error as Error).message}`);
   }
-} 
+}
