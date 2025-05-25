@@ -14,4 +14,4 @@ export async function addCommand(content: string): Promise<void> {
   } catch (error) {
     Display.showError(`タスクの追加に失敗しました: ${(error as Error).message}`);
   }
-} 
+}

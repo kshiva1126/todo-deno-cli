@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  quality-check:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+        
+    - name: Cache Deno dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/deno
+        key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.json', '**/deno.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-deno-
+        
+    - name: Verify formatting
+      run: |
+        echo "🎨 フォーマットチェックを実行中..."
+        deno task fmt:check
+        
+    - name: Run linter
+      run: |
+        echo "🔍 リントチェックを実行中..."
+        deno task lint
+        
+    - name: Type check
+      run: |
+        echo "📝 型チェックを実行中..."
+        deno task check
+
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        deno-version: [v1.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: ${{ matrix.deno-version }}
+        
+    - name: Cache Deno dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/deno
+        key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.json', '**/deno.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-deno-
+        
+    - name: Run tests
+      run: |
+        echo "🧪 テストを実行中..."
+        deno task test
+        
+    - name: Test CLI installation and basic functionality
+      run: |
+        echo "⚙️ CLIインストールテストを実行中..."
+        deno task install
+        
+        # Test basic commands
+        echo "📋 基本コマンドテスト..."
+        todo help
+        
+        echo "➕ タスク追加テスト..."
+        todo add "CI テストタスク"
+        
+        echo "📝 タスク一覧表示テスト..."
+        todo list
+        
+        echo "✅ タスク完了テスト..."
+        todo complete 1
+        todo list
+        
+        echo "🗑️ タスク削除テスト..."
+        todo delete 1
+        todo list
+        
+        echo "✨ 全てのテストが成功しました！"
+
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+        
+    - name: Run security audit
+      run: |
+        echo "🔒 セキュリティチェックを実行中..."
+        # Denoの依存関係チェック
+        deno info --json main.ts | jq '.modules[] | select(.specifier | startswith("https://")) | .specifier' || true
+        
+        # 権限チェック
+        echo "📋 必要な権限:"
+        echo "  - --allow-read: タスクファイルの読み取り"
+        echo "  - --allow-write: タスクファイルの書き込み"
+        echo "  - --allow-env: ホームディレクトリの取得" 
